@@ -52,7 +52,6 @@ export class CoreCoursesMyCoursesPage implements OnInit, OnDestroy {
         // Refresh the enabled flags if site is updated.
         this.updateSiteObserver = CoreEvents.on(CoreEvents.SITE_UPDATED, () => {
             this.downloadCoursesEnabled = !CoreCourses.isDownloadCoursesDisabledInSite();
-            this.loadSiteName();
 
         }, CoreSites.getCurrentSiteId());
 
@@ -67,8 +66,6 @@ export class CoreCoursesMyCoursesPage implements OnInit, OnDestroy {
 
         const deepLinkManager = new CoreMainMenuDeepLinkManager();
         deepLinkManager.treatLink();
-
-        this.loadSiteName();
 
         this.loadContent();
     }
@@ -106,13 +103,6 @@ export class CoreCoursesMyCoursesPage implements OnInit, OnDestroy {
         }
 
         this.loaded = true;
-    }
-
-    /**
-     * Load the site name.
-     */
-    protected loadSiteName(): void {
-        this.siteName = CoreSites.getRequiredCurrentSite().getSiteName() || '';
     }
 
     /**

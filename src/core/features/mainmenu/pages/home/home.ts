@@ -15,8 +15,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { CoreSites } from '@services/sites';
-import { CoreEventObserver, CoreEvents } from '@singletons/events';
 import { CoreTabsOutletComponent, CoreTabsOutletTab } from '@components/tabs-outlet/tabs-outlet';
 import { CoreMainMenuHomeDelegate, CoreMainMenuHomeHandlerToDisplay } from '../../services/home-delegate';
 import { CoreUtils } from '@services/utils/utils';
@@ -34,12 +32,10 @@ export class CoreMainMenuHomePage implements OnInit {
 
     @ViewChild(CoreTabsOutletComponent) tabsComponent?: CoreTabsOutletComponent;
 
-    siteName = '';
     tabs: CoreTabsOutletTab[] = [];
     loaded = false;
 
     protected subscription?: Subscription;
-    protected updateSiteObserver?: CoreEventObserver;
     protected deepLinkManager?: CoreMainMenuDeepLinkManager;
 
     /**
@@ -48,16 +44,10 @@ export class CoreMainMenuHomePage implements OnInit {
     ngOnInit(): void {
         this.deepLinkManager = new CoreMainMenuDeepLinkManager();
 
-        this.loadSiteName();
-
         this.subscription = CoreMainMenuHomeDelegate.getHandlersObservable().subscribe((handlers) => {
             handlers && this.initHandlers(handlers);
         });
 
-        // Refresh the enabled flags if site is updated.
-        this.updateSiteObserver = CoreEvents.on(CoreEvents.SITE_UPDATED, () => {
-            this.loadSiteName();
-        }, CoreSites.getCurrentSiteId());
     }
 
     /**
@@ -94,13 +84,6 @@ export class CoreMainMenuHomePage implements OnInit {
         setTimeout(() => {
             this.loaded = loaded;
         }, 50);
-    }
-
-    /**
-     * Load the site name.
-     */
-    protected loadSiteName(): void {
-        this.siteName = CoreSites.getRequiredCurrentSite().getSiteName() || '';
     }
 
     /**
